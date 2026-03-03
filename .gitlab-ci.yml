@@ -1,13 +1,17 @@
-# Use a Maven image to provide the environment
 image: maven:3.9-eclipse-temurin-17
 
-# Define the order of stages
+# This block controls the entire pipeline trigger logic
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - when: never # Don't run for any other branches
+
 stages:
   - build
   - test
   - archive
 
-# Global cache to speed up Maven builds by storing dependencies
 cache:
   paths:
     - .m2/repository
@@ -40,16 +44,12 @@ archive_job:
   artifacts:
     paths:
       - built/*.jar
-    expire_in: never  # Keep these indefinitely like Jenkins archiveArtifacts
+    expire_in: never
+  # This acts like your Jenkins 'post' success/failure block
   after_script:
-    - echo "Build & Test successful. .jar stored in built/"
-
-# Handling failure (similar to Jenkins 'post { failure }')
-# pages: # This is a dummy name, but you can use any job to catch status
-#   stage: .post
-#   script:
-#     - echo "Pipeline finished."
-#   when: on_failure
-#   allow_failure: true
-#   script:
-#     - echo "Build or Tests failed!"
+    - >
+      if [ $CI_JOB_STATUS == 'success' ]; then
+        echo "Build & Test successful. .jar stored in built/";
+      else
+        echo "Build or Tests failed!";
+      fi
