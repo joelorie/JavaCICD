@@ -24,10 +24,8 @@ pipeline {
 
         stage('Build') {
             steps {
-                dir("${PROJECT_DIR}") {
                     echo "Running Maven build..."
                     sh 'mvn clean package'
-                }
             }
         }
 
