@@ -5,44 +5,27 @@ pipeline {
         githubPush()
     }
 
-    environment {
-        PROJECT_DIR = "JavaCICD"
-        REPO_URL = "https://github.com/joelorie/JavaCICD.git"
-        BRANCH = "main"
-        BUILD_DIR = "built"
-    }
-
     stages {
-
-        stage('Checkout Code') {
-            steps {
-                git branch: "${BRANCH}",
-                    credentialsId: 'github-creds',
-                    url: "${REPO_URL}"
-            }
-        }
 
         stage('Build') {
             steps {
-                    echo "Running Maven build..."
-                    sh 'mvn clean package'
+                echo "Running Maven build..."
+                sh 'mvn clean package'
             }
         }
 
         stage('Test') {
             steps {
-                dir("${PROJECT_DIR}") {
-                    echo "Running Maven tests..."
-                    sh 'mvn test'
-                }
+                echo "Running Maven tests..."
+                sh 'mvn test'
             }
         }
 
         stage('Archive .jar') {
             steps {
                 sh '''
-                    mkdir -p ${BUILD_DIR}
-                    cp ${PROJECT_DIR}/target/*.jar ${BUILD_DIR}/
+                    mkdir -p built
+                    cp target/*.jar built/
                 '''
                 archiveArtifacts artifacts: 'built/*.jar', fingerprint: true
             }
