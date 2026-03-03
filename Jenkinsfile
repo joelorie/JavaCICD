@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         PROJECT_DIR = "JavaCICD"
-        REPO_URL = "https://github.com/JavaCICD.git"
+        REPO_URL = "https://github.com/joelorie/JavaCICD.git"
         BRANCH = "main"
         BUILD_DIR = "built"
     }
