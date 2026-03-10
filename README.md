@@ -1,2 +1,2 @@
 # JavaCICD
-Tes
+Test
